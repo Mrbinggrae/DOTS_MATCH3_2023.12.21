@@ -6,7 +6,7 @@ using UnityEngine;
 
 public struct Board : IComponentData
 {
-    public int2 BoardSize;
+    
 }
 
 [InternalBufferCapacity(8)]

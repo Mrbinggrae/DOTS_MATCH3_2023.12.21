@@ -167,9 +167,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d293739828c96c49bc533411844b321, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize:
-    x: 6
-    y: 6
   gamePieceSOs:
   - {fileID: 11400000, guid: 89240a6c242e77e488d47a5e11370130, type: 2}
   - {fileID: 11400000, guid: 5bd07a7fe3227004a87a8cb107f59447, type: 2}

@@ -1,29 +1,26 @@
 using Unity.Entities;
 using Unity.Mathematics;
-using Unity.VisualScripting;
-using UnityEngine.Rendering;
+using Unity.Transforms;
+using UnityEngine;
 using Random = Unity.Mathematics.Random;
 
 public readonly partial struct GamePieceSpawnAspect : IAspect
 {
-    readonly RefRO<Board> Board;
     readonly DynamicBuffer<GamePieceBuffer> GamePieceBuffers;
-   
-    int2 BoardSize
-    {
-        get => Board.ValueRO.BoardSize;
-    }
 
     public void SpawnInitialGamePiece(EntityCommandBuffer ecb)
     {
         var random = Random.CreateFromIndex((uint)UnityEngine.Random.Range(0, int.MaxValue));
-        for (int x = 0; x < BoardSize.x; x++)
+        int2 boardSize = BoardConfig.BOARD_SIZE;
+        
+        for (int x = 0; x < boardSize.x; x++)
         {
-            for (int y = 0; y < BoardSize.y; y++)
+            for (int y = 0; y < boardSize.y; y++)
             {
+                Debug.Log("SpawnInitialGamePiece");
+                var coord = new int2(x, y);
                 var rnd = random.NextInt(GamePieceBuffers.Length);
-                var newCoord = new int2(x, y);
-                InstantiateRandomGamePiece(newCoord, rnd, ecb);
+                InstantiateRandomGamePiece(coord, rnd, ecb);
             }
         }
     }
@@ -37,6 +34,12 @@ public readonly partial struct GamePieceSpawnAspect : IAspect
         {
             Coord = coord,
             MatchValue = gamePieceBuffer.MatchValue
+        });
+
+        ecb.SetComponent(pieceEntity, new LocalTransform
+        {
+            Position = new float3(coord.x, coord.y + BoardConfig.Y_OFFSET, 0),
+            Scale = 1
         });
     }
 }

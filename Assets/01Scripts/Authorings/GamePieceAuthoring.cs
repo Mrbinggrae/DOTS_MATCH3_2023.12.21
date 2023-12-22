@@ -12,12 +12,14 @@ public class GamePieceAuthoring : MonoBehaviour
     {
         public override void Bake(GamePieceAuthoring authoring)
         {
-            var entity = GetEntity(TransformUsageFlags.Dynamic);
+            var entity = GetEntity(TransformUsageFlags.None);
 
             AddComponent(entity, 
                 new GamePiece { 
                 MatchValue = authoring.match
             });
+
+            AddComponent(entity, new MoveEnableable{ });
         }
     }
 }

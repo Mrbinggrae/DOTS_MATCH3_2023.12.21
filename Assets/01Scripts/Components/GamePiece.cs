@@ -21,3 +21,4 @@ public struct GamePiece : IComponentData, ICleanupComponentData
     public Match MatchValue;
     public int2 Coord;
 }
+
