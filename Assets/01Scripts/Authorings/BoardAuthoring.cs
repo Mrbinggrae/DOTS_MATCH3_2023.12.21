@@ -7,13 +7,14 @@ using UnityEngine;
 public class BoardConfig
 {
     public readonly static float Y_OFFSET = 3;
-    public readonly static int2 BOARD_SIZE = new int2(6, 6);
-    public readonly static float GAME_PIECE_MOVE_SPEED = 3;
 }
 
 
 public class BoardAuthoring : MonoBehaviour
 {
+    public int2 boardSize;
+    public float gamePieceMoveSpeed;
+
     public List<GamePieceSO> gamePieceSOs;
 
     class Baker : Baker<BoardAuthoring>
@@ -32,7 +33,11 @@ public class BoardAuthoring : MonoBehaviour
                 });
             }
 
-            AddComponent<Board>(entity);
+            AddComponent(entity, new Board
+            {
+                BoardSize = authoring.boardSize,
+                GamePieceMoveSpeed = authoring.gamePieceMoveSpeed,
+            });
         }
     }
 }

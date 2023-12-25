@@ -25,6 +25,7 @@ public partial struct BoardInitializationSystem : ISystem
         var spawnAspect = SystemAPI.GetAspect<GamePieceSpawnAspect>(boardEntity);
         
         spawnAspect.SpawnInitialGamePiece(ecb);
+        BoardStateChanger.ChangeToMoveState(ecb, boardEntity);
   
         state.Enabled = false;
     }

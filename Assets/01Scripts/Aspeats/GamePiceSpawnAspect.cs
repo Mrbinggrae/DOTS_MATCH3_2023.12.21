@@ -7,17 +7,24 @@ using Random = Unity.Mathematics.Random;
 public readonly partial struct GamePieceSpawnAspect : IAspect
 {
     readonly DynamicBuffer<GamePieceBuffer> GamePieceBuffers;
+    readonly RefRO<Board> Board;
+
+    int2 BoardSize
+    {
+        get => Board.ValueRO.BoardSize;
+    }
+
+
 
     public void SpawnInitialGamePiece(EntityCommandBuffer ecb)
     {
         var random = Random.CreateFromIndex((uint)UnityEngine.Random.Range(0, int.MaxValue));
-        int2 boardSize = BoardConfig.BOARD_SIZE;
+        int2 boardSize = BoardSize;
         
         for (int x = 0; x < boardSize.x; x++)
         {
             for (int y = 0; y < boardSize.y; y++)
             {
-                Debug.Log("SpawnInitialGamePiece");
                 var coord = new int2(x, y);
                 var rnd = random.NextInt(GamePieceBuffers.Length);
                 InstantiateRandomGamePiece(coord, rnd, ecb);

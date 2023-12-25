@@ -8,6 +8,7 @@ public partial struct GamePieceMoveSystem : ISystem
 {
     ComponentLookup<MoveEnableable> m_MoveEnableableLookup;
     EntityQuery m_MoveQuery;
+    
 
     public void OnCreate(ref SystemState state)
     {
@@ -17,19 +18,29 @@ public partial struct GamePieceMoveSystem : ISystem
             .WithAll<GamePiece>()
             .Build(state.EntityManager);
         
-        state.RequireForUpdate(m_MoveQuery);
+        state.RequireForUpdate<BoardMoveStateTag>();
     }
 
     public void OnUpdate(ref SystemState state)
     {
+        var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+        var boardEntity = SystemAPI.GetSingletonEntity<Board>();
+        var moveSpeed = SystemAPI.GetSingleton<Board>().GamePieceMoveSpeed;
+        var deltaTime = SystemAPI.Time.DeltaTime;
+
         m_MoveEnableableLookup.Update(ref state);
 
-        foreach (var (gamePiece, entity) 
-            in SystemAPI.Query<RefRO<GamePiece>>().WithEntityAccess() )
+        foreach (var (move,entity) 
+            in SystemAPI.Query<GamePieceMoveAspect>().WithEntityAccess().WithAll<GamePiece>() )
         {
-            m_MoveEnableableLookup.SetComponentEnabled(entity, false);
+            if (move.IsArrived())
+                m_MoveEnableableLookup.SetComponentEnabled(entity, false);
+            else
+                move.MoveGamePiece(deltaTime, moveSpeed);
         }
 
-        Debug.Log(m_MoveQuery.CalculateEntityCount());
+        if (m_MoveQuery.CalculateEntityCount() == 0) 
+            BoardStateChanger.ChangeToMatchState(ecb, boardEntity);
     }
 }
+
