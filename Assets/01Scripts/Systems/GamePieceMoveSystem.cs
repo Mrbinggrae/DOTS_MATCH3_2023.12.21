@@ -13,10 +13,10 @@ public partial struct GamePieceMoveSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         m_MoveEnableableLookup = SystemAPI.GetComponentLookup<MoveEnableable>();
-        m_MoveQuery = new EntityQueryBuilder(Allocator.Temp)
+        m_MoveQuery = SystemAPI.QueryBuilder()
             .WithAll<MoveEnableable>()
             .WithAll<GamePiece>()
-            .Build(state.EntityManager);
+            .Build();
         
         state.RequireForUpdate<BoardMoveStateTag>();
     }
